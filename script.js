@@ -59,8 +59,22 @@ class GoodsList {
             listHtml += goodItem.render();
         });
         document.querySelector('.goods-list').insertAdjacentHTML('afterbegin', listHtml);
+
+        // Для наглядности отрендерим цену на экране
+        let fullPrice = this.getFullPrice()
+        let fullPriceHtml = fullPrice?`<div class="full-price"><h3>Суммарная цена всех товаров: ${fullPrice}руб</p></div>`:``
+        document.querySelector('.goods-list').insertAdjacentHTML('beforebegin', fullPriceHtml);
     }
 
+    // #2 Добавьте для GoodsList метод, определяющий суммарную стоимость всех товаров.
+    getFullPrice() {
+        if (this.goods.length >0) {
+            return this.goods.reduce((acc, curr) => {
+                return acc += curr.price
+            }, 0)
+        }
+        return null
+    }
 }
 
 const list = new GoodsList();
@@ -77,9 +91,6 @@ list.render();
 //
 // }
 
-
-
-// #2 Добавьте для GoodsList метод, определяющий суммарную стоимость всех товаров.
 
 // #3 Некая сеть фастфуда предлагает несколько видов гамбургеров:
 // a. Маленький (50 рублей, 20 калорий).

@@ -43,7 +43,6 @@ class GoodsList {
             })
             .then((request) => {
                 this.goods = request.map(good => ({title: good.product_name, price: good.price, id: good.id_product}))
-                console.log(this.goods)
                 this.render();
             })
             .catch((err) => {
@@ -81,11 +80,11 @@ class BasketItem extends GoodsItem {
     }
 
     render() {
-        return  `<div class="basket-item">
+        return `<div class="basket-item">
                     <span>Название: ${this.title}</span>
                     <span>Цена: ${this.price}</span>
                     <span>Количество:  ${this.quantity}</span>
-                    <button class="btn btn-outline-danger"
+                    <button class="btn btn-outline-danger basket-item__remove"
                             data-id="${this.id}"
                     >
                         x
@@ -107,7 +106,6 @@ class Basket {
         this.items = []
         this.fullPrice = 0
         this.$basket = document.querySelector('.basket')
-        // this.$
     }
 
     fetchBasketItems() {
@@ -122,7 +120,7 @@ class Basket {
                 this.render();
             })
             .catch((err) => {
-                console.log(err.text)
+                console.log(err)
             })
     }
 
@@ -163,25 +161,21 @@ class Basket {
 
     }
 
-    // removeFromBasket() {
-    //     console.log(this.title)
-    //     fetch(`${API_URL}deleteFromBasket.json`)
-    //         .then((response) => {
-    //             return response.json();
-    //         })
-    //         .then((data) => {
-    //             console.log(data)
-    //             this.items = []
-    //             this.amount = 0
-    //
-    //             // this.render();
-    //         })
-    //         .catch((err) => {
-    //             console.log(123)
-    //             console.log(err.text)
-    //         })
-    //     // Логика удаление элемента из корзины
-    // }
+    removeFromBasket(event) {
+        let product_id = parseInt(event.target.dataset.id)
+        this.items = this.items.filter(item => item.id_product!==product_id)
+        fetch(`${API_URL}deleteFromBasket.json`)
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                this.render()
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+        // Логика удаление элемента из корзины
+    }
 
     createOrder() {
         // Логика создания заказа из элементов корзины
@@ -191,15 +185,13 @@ class Basket {
         let listHtml = '';
         this.items.forEach(item => {
             const basketItem = new BasketItem(item.product_name, item.price, item.id_product, item.quantity);
-            console.log(basketItem)
             listHtml += basketItem.render();
-            console.log(listHtml)
         });
-        // document.querySelector('.goods-list').insertAdjacentHTML('afterbegin', listHtml);
-        this.$basket.insertAdjacentHTML('beforeend', listHtml)
-        // let fullPrice = this.getFullPrice()
-        let fullPriceHtml = fullPrice ? `<div class="full-price"><h3>Суммарная цена всех товаров: ${fullPrice}руб</p></div>` : ``
-        document.querySelector('.goods-list').insertAdjacentHTML('beforebegin', fullPriceHtml);
+        this.$basket.innerHTML = listHtml
+        let $delete_buttons = document.querySelectorAll(`.basket-item__remove`)
+        $delete_buttons.forEach(btn => {
+            btn.addEventListener('click', this.removeFromBasket.bind(this))
+        })
     }
 }
 

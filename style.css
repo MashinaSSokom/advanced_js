@@ -5,3 +5,14 @@
     width: 250px;
     height: 320px;
 }
+.goods-item__button{
+    flex: 1 0 auto;
+    margin-top: 150px;
+}
+.basket-item{
+    border-top: 1px solid grey;
+    width: 450px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

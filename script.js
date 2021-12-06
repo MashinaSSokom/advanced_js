@@ -155,7 +155,6 @@ class Basket {
         //         // this.render();
         //     })
         //     .catch((err) => {
-        //         console.log(123)
         //         console.log(err.text)
         //     })
 
@@ -163,7 +162,7 @@ class Basket {
 
     removeFromBasket(event) {
         let product_id = parseInt(event.target.dataset.id)
-        this.items = this.items.filter(item => item.id_product!==product_id)
+        this.items = this.items.filter(item => item.id_product !== product_id)
         fetch(`${API_URL}deleteFromBasket.json`)
             .then((response) => {
                 return response.json();

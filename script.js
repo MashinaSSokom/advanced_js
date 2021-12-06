@@ -43,16 +43,16 @@ class GoodsList {
             })
             .then((request) => {
                 this.goods = request.map(good => ({title: good.product_name, price: good.price, id: good.id_product}))
-                this.render();
+                this.render(this.goods);
             })
             .catch((err) => {
                 console.log(err.text)
             })
     }
 
-    render() {
+    render(items) {
         let listHtml = '';
-        this.goods.forEach(good => {
+        items.forEach(good => {
             const goodItem = new GoodsItem(good.title, good.price, good.id);
             listHtml += goodItem.render();
         });
@@ -117,7 +117,7 @@ class Basket {
             .then((request) => {
                 this.items = request.contents
                 this.fullPrice = request.amount
-                this.render();
+                this.render(this.items);
             })
             .catch((err) => {
                 console.log(err)
@@ -181,9 +181,9 @@ class Basket {
         // Логика создания заказа из элементов корзины
     }
 
-    render() {
+    render(items) {
         let listHtml = '';
-        this.items.forEach(item => {
+        items.forEach(item => {
             const basketItem = new BasketItem(item.product_name, item.price, item.id_product, item.quantity);
             listHtml += basketItem.render();
         });

@@ -43,16 +43,16 @@ class GoodsList {
             })
             .then((request) => {
                 this.goods = request.map(good => ({title: good.product_name, price: good.price, id: good.id_product}))
-                this.render();
+                this.render(this.goods);
             })
             .catch((err) => {
                 console.log(err.text)
             })
     }
 
-    render() {
+    render(items) {
         let listHtml = '';
-        this.goods.forEach(good => {
+        items.forEach(good => {
             const goodItem = new GoodsItem(good.title, good.price, good.id);
             listHtml += goodItem.render();
         });
@@ -117,7 +117,7 @@ class Basket {
             .then((request) => {
                 this.items = request.contents
                 this.fullPrice = request.amount
-                this.render();
+                this.render(this.items);
             })
             .catch((err) => {
                 console.log(err)
@@ -155,7 +155,6 @@ class Basket {
         //         // this.render();
         //     })
         //     .catch((err) => {
-        //         console.log(123)
         //         console.log(err.text)
         //     })
 
@@ -163,7 +162,7 @@ class Basket {
 
     removeFromBasket(event) {
         let product_id = parseInt(event.target.dataset.id)
-        this.items = this.items.filter(item => item.id_product!==product_id)
+        this.items = this.items.filter(item => item.id_product !== product_id)
         fetch(`${API_URL}deleteFromBasket.json`)
             .then((response) => {
                 return response.json();
@@ -181,9 +180,9 @@ class Basket {
         // Логика создания заказа из элементов корзины
     }
 
-    render() {
+    render(items) {
         let listHtml = '';
-        this.items.forEach(item => {
+        items.forEach(item => {
             const basketItem = new BasketItem(item.product_name, item.price, item.id_product, item.quantity);
             listHtml += basketItem.render();
         });
@@ -203,134 +202,3 @@ let basket = new Basket()
 goodsList.fetchGoods();
 basket.fetchBasketItems()
 // basket.clearBasket()
-
-//
-// class Hamburger {
-//     constructor(size, stuffing) {
-//         this.toppings = [
-//             {
-//                 title: 'mayo',
-//                 price: 20,
-//                 caloric: 5,
-//                 count: 0
-//             },
-//             {
-//                 title: 'spice',
-//                 price: 15,
-//                 caloric: 0,
-//                 count: 0
-//             },
-//         ]
-//         switch (size) {
-//             case ('big'): {
-//                 this.size = {
-//                     title: 'big',
-//                     price: 100,
-//                     caloric: 40
-//                 }
-//                 break
-//             }
-//             case ('small'): {
-//                 this.size = {
-//                     title: 'small',
-//                     price: 50,
-//                     caloric: 20
-//                 }
-//                 break
-//             }
-//             default:
-//                 throw new Error("Invalid hamburger size! Available sizes: big, small")
-//         }
-//         switch (stuffing) {
-//             case ('cheese'): {
-//                 this.stuffing = {
-//                     title: 'cheese',
-//                     price: 10,
-//                     caloric: 20
-//                 }
-//                 break
-//             }
-//             case ('salad'): {
-//                 this.stuffing = {
-//                     title: 'salad',
-//                     price: 20,
-//                     caloric: 5
-//                 }
-//                 break
-//             }
-//             case ('fries'): {
-//                 this.stuffing = {
-//                     title: 'fries',
-//                     price: 15,
-//                     caloric: 10
-//                 }
-//                 break
-//             }
-//             default:
-//                 throw new Error("Invalid hamburger stuffing! Available stuffings: cheese, salad, fries.")
-//         }
-//     }
-//
-//     addTopping(topping) {    // Добавить добавку
-//         let msg = `Invalid topping! Available toppings: ${this.toppings.map(el => el.title)}`
-//         this.toppings.forEach(el => {
-//             if (el.title === topping) {
-//                 el.count += 1
-//                 msg = `Add one more ${topping}!`
-//             }
-//         })
-//         console.log(msg)
-//     }
-//
-//     removeTopping(topping) { // Убрать добавку
-//         let msg = `Invalid topping! Available toppings: ${this.toppings.map(el => el.title)}`
-//         this.toppings.forEach(el => {
-//             if (el.title === topping) {
-//                 if (el.count === 0) {
-//                     msg = `${topping} count is already zero ^_^`
-//                 } else {
-//                     el.count -= 1
-//                     msg = `Reduce quantity of ${topping} by 1!`
-//                 }
-//
-//             }
-//         })
-//         console.log(msg)
-//     }
-//
-//     getToppings() {   // Получить список добавок
-//         return this.toppings
-//     }
-//
-//     getSize() {              // Узнать размер гамбургера
-//         return this.size.title
-//     }
-//
-//     getStuffing() {          // Узнать начинку гамбургера
-//         return this.stuffing.title
-//     }
-//
-//     calculatePrice() {       // Узнать цену
-//         return this.size.price + this.stuffing.price + this.toppings.reduce((acc, cur) => acc += cur.price * cur.count, 0)
-//     }
-//
-//     calculateCalories() {    // Узнать калорийность
-//         return this.size.caloric + this.stuffing.caloric + this.toppings.reduce((acc, cur) => acc += cur.caloric * cur.count, 0)
-//     }
-// }
-//
-// let hamburger = new Hamburger('big', 'cheese')
-// console.log(hamburger.getSize())
-// console.log(hamburger.getStuffing())
-// console.log(hamburger.getToppings())
-//
-// hamburger.addTopping('mayo')
-// hamburger.addTopping('spice')
-// console.log(hamburger.getToppings())
-//
-// hamburger.addTopping('mayo123123')
-// hamburger.removeTopping('spice')
-// console.log(hamburger.getToppings())
-//
-// console.log(hamburger.calculatePrice())
-// console.log(hamburger.calculateCalories())
